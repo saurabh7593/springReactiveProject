@@ -5,18 +5,27 @@ import com.books.inventory.repository.BooksMongoRepository
 import com.books.inventory.repository.BooksRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 
 @Service
 class BooksServiceImpl(private val booksRepository : BooksMongoRepository):BooksService{
-    override fun getAllBooks(): List<Book> {
-        return booksRepository.findAll()
+    override fun getAllBooks(): Flux<Book>? {
+        return Flux.fromIterable(booksRepository.findAll());
     }
 
-    override fun updateTheBook(title: String, book: Book) {
+    override fun updateTheBook(book: Book): Book {
+        if(findABook(book.id).isNotEmpty()){
+            booksRepository.deleteById(book.id);
+        }
+        return booksRepository.save(book);
     }
 
-    override fun deleteABook(book: Book) {
-        booksRepository.delete(book);
+    override fun deleteABook(book: String): Boolean {
+        if (findABook(book).isNotEmpty()){
+            booksRepository.deleteById(book) ;
+            return true
+        }else return false;
+
     }
 
     override fun findABook(params: String?): List<Book> {
