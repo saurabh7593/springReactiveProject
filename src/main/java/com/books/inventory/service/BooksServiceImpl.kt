@@ -6,6 +6,8 @@ import com.books.inventory.repository.BooksRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
+import reactor.core.publisher.toFlux
 
 @Service
 class BooksServiceImpl(private val booksRepository : BooksMongoRepository):BooksService{
@@ -14,23 +16,23 @@ class BooksServiceImpl(private val booksRepository : BooksMongoRepository):Books
     }
 
     override fun updateTheBook(book: Book): Book {
-        if(findABook(book.id).isNotEmpty()){
+        if(findABook(book.id)!=null){
             booksRepository.deleteById(book.id);
         }
         return booksRepository.save(book);
     }
 
-    override fun deleteABook(book: String): Boolean {
-        if (findABook(book).isNotEmpty()){
+    override fun deleteABook(book: String): Mono<Boolean> {
+        if (findABook(book)!=null){
             booksRepository.deleteById(book) ;
-            return true
-        }else return false;
+            return Mono.just(true);
+        }else return Mono.just(false);
 
     }
 
-    override fun findABook(params: String?): List<Book> {
-        return booksRepository.findAll().filter { book->
+    override fun findABook(params: String?): Flux<Book> {
+        return Flux.fromIterable(booksRepository.findAll().filter { book->
             book.title.equals(params!!.toUpperCase())|| book.authors.contains(params!!.toUpperCase());
-         }
+         });
     }
 }

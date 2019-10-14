@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 interface BooksController {
 
@@ -17,8 +18,8 @@ interface BooksController {
     fun editABook(@RequestBody book: Book): Book;
 
     @GetMapping("/deleteThisBook/{bookId}")
-    fun deleteABook(@PathVariable (value = "bookId")book: String):Boolean;
+    fun deleteABook(@PathVariable (value = "bookId")book: String): Mono<Boolean>;
 
     @GetMapping("/findThisBook/{searchParameter}")
-    fun findABook(@PathVariable("searchParameter")params:String?): List<Book>;
+    fun findABook(@PathVariable("searchParameter")params:String?): Flux<Book>;
 }

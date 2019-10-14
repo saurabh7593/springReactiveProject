@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @RestController
@@ -20,11 +21,11 @@ import reactor.core.publisher.Flux
         return booksService.updateTheBook(book);
     }
 
-    override fun deleteABook(book: String) :Boolean {
+    override fun deleteABook(book: String) :Mono<Boolean> {
         return booksService.deleteABook(book);
     }
 
-     override fun findABook(params: String?): List<Book> {
+     override fun findABook(params: String?): Flux<Book> {
         return booksService.findABook(params);
     }
 

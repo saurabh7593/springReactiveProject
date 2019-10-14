@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.lang.module.ModuleDescriptor
 import java.util.*
 
-@Document(collection = "books")
+@Document(collection = "book")
 data class Book(@Id
                 var id: String = UUID.randomUUID().toString(),
                 val title: String,
