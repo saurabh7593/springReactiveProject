@@ -1,6 +1,7 @@
 package com.books.inventory.controller
 
 import com.books.inventory.beans.Book
+import com.books.inventory.beans.ImageLinks
 import com.books.inventory.service.BooksService
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,8 +16,8 @@ import reactor.test.StepVerifier
 @RunWith(SpringJUnit4ClassRunner::class)
 class BooksControllerImplTest {
     val booksService = mock(BooksService::class.java)
-    val book1= Book(title = "INFERNO",authors = listOf("DAN BROWN"),image = "imageURL",description = "description",price = "234",quantity = "25");
-    val book2= Book(title = "FREEDOM IN EXILE",authors = listOf("DALAI LAMA"),image = "imageURL",description = "description",price = "334",quantity = "125");
+    val book1= Book(title = "INFERNO",authors = listOf("DAN BROWN"), imageLinks = ImageLinks("imageURL", "inameURL"),description = "description",price = "234",quantity = "25");
+    val book2= Book(title = "FREEDOM IN EXILE",authors = listOf("DALAI LAMA"),imageLinks = ImageLinks("imageURL",null),description = "description",price = "334",quantity = "125");
 
     val booksController = BooksControllerImpl(booksService)
 
@@ -53,6 +54,28 @@ class BooksControllerImplTest {
 
         StepVerifier.create(expectedResult)
                 .expectNext(true)
+                .verifyComplete()
+    }
+
+    @Test
+    fun `should be able to edit a book`() {
+        Mockito.`when`(booksService.updateTheBook(book1)).thenReturn(Mono.just(book1));
+
+        val updatedBook= booksController.editABook(book1);
+
+        StepVerifier.create(updatedBook)
+                .expectNext(book1)
+                .verifyComplete()
+    }
+
+    @Test
+    fun `should be able to add a book`() {
+        Mockito.`when`(booksService.addBooksToInventory(book1)).thenReturn(Mono.just(book1));
+
+        val addedBook= booksController.addBookToInventory(book1);
+
+        StepVerifier.create(addedBook)
+                .expectNext(book1)
                 .verifyComplete()
     }
 }
