@@ -8,12 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForObject
+import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriComponentsBuilder
 
 
@@ -25,14 +20,15 @@ class BooksServiceImpl(private val booksRepository : BooksMongoRepository,@Value
 
 
     override fun getBooksFromGoogleApi(query: String): Flux<GoogleBooks> {
-        val restTemplate = RestTemplate()
         val builder = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("q", query)
+                .encode().toUriString()
 
-        return  Flux.just(restTemplate.getForObject(
-                builder.toUriString(),
-                HttpMethod.GET,
-                GoogleBooks::class.java))
+        return WebClient.create(builder)
+                .get()
+                .retrieve()
+                .bodyToFlux(GoogleBooks::class.java)
+
     }
 
     override fun getAllBooks(): Flux<Book>? {
@@ -57,8 +53,6 @@ class BooksServiceImpl(private val booksRepository : BooksMongoRepository,@Value
     }
 
     override fun addBooksToInventory(book: Book): Mono<Book> {
-        if (findABook(book.id)==null)
             return Mono.just(booksRepository.save(book))
-            return Mono.empty();
     }
 }
