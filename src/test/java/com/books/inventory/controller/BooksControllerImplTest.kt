@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
+import java.util.*
+import java.util.Optional.empty
 
 @RunWith(SpringJUnit4ClassRunner::class)
 class BooksControllerImplTest {
@@ -20,7 +22,6 @@ class BooksControllerImplTest {
     val book2= Book(title = "FREEDOM IN EXILE",authors = listOf("DALAI LAMA"),imageLinks = ImageLinks("imageURL",null),description = "description",price = "334",quantity = "125");
 
     val booksController = BooksControllerImpl(booksService)
-
 
 
     @Test
@@ -36,6 +37,20 @@ class BooksControllerImplTest {
     }
 
     @Test
+    fun `should return error message if there is error`() {
+        Mockito.`when`(booksService.getAllBooks()).thenReturn(Flux.just(book1, book2)
+                .concatWith(Flux.error(RuntimeException("Some Exception!"))))
+
+        val expectedBookList = booksController.listOfBooks();
+
+        StepVerifier.create(expectedBookList)
+                .expectNext(book1)
+                .expectNext(book2)
+                .expectErrorMessage("Some Exception!")
+                .verify()
+    }
+
+    @Test
     fun `should be able to find a book`() {
         Mockito.`when`(booksService.findABook(ArgumentMatchers.anyString())).thenReturn(Flux.just(book1))
 
@@ -45,15 +60,27 @@ class BooksControllerImplTest {
                 .expectNext(book1)
                 .verifyComplete()
     }
+    @Test
+    fun `should return error message if there is no book`() {
+        Mockito.`when`(booksService.findABook(ArgumentMatchers.anyString()))
+                .thenReturn(Flux.error(RuntimeException("Some Exception!")))
+
+        val expectedBookList = booksController.findABook(ArgumentMatchers.anyString())
+
+        StepVerifier.create(expectedBookList)
+                .expectErrorMessage("Some Exception!")
+                .verify()
+    }
+
 
     @Test
     fun `should be able to delete a book`() {
-        Mockito.`when`(booksService.deleteABook(ArgumentMatchers.anyString())).thenReturn(Mono.just(true));
+        Mockito.`when`(booksService.deleteABook(ArgumentMatchers.anyString())).thenReturn(Mono.empty<Void>());
 
         val expectedResult= booksController.deleteABook(ArgumentMatchers.anyString());
 
         StepVerifier.create(expectedResult)
-                .expectNext(true)
+                .expectNext()
                 .verifyComplete()
     }
 

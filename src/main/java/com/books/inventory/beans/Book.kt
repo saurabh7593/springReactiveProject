@@ -12,10 +12,15 @@ data class Book(@Id
                 val imageLinks: ImageLinks?,
                 val description: String?,
                 val price: String?,
-                val quantity: String?)
+                val quantity: String?) {
+    override fun toString(): String {
+        return "Book(id='$id', title='$title', price=$price, quantity=$quantity)"
+    }
+}
 
 data class ImageLinks(val smallThumbnail: String?, val thumbnail: String?)
 
 data class GoogleBooks(val items: List<GoogleBookType?>)
 
 data class GoogleBookType(val volumeInfo: Book?)
+
