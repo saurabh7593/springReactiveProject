@@ -42,8 +42,6 @@ class BooksServiceImpl(private val booksRepository : BooksMongoRepository,
 
     override fun deleteABook(book: String): Mono<Void> {
         return booksRepository.deleteById(book);
-//        deletedBook.subscribe(KafkaService::sendBookisDeletedMessage)
-//        return booksRepository.deleteById(book)
     }
 
     override fun findABook(params: String?): Flux<Book> =booksRepository.findByAuthorsLike(params).

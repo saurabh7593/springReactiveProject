@@ -8,14 +8,16 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.Mockito.*
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.junit4.SpringRunner
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
-import java.util.*
-import java.util.Optional.empty
 
-@RunWith(SpringJUnit4ClassRunner::class)
+@RunWith(SpringRunner::class)
 class BooksControllerImplTest {
     val booksService = mock(BooksService::class.java)
     val book1= Book(title = "INFERNO",authors = listOf("DAN BROWN"), imageLinks = ImageLinks("imageURL", "inameURL"),description = "description",price = "234",quantity = "25");
