@@ -99,6 +99,13 @@ open class BooksServiceImplTest {
     }
 
     @Test
+    fun `should get audit report`() {
+        webTestClient.get().uri("/auditList")
+                .exchange()
+                .expectStatus().isOk
+    }
+
+    @Test
     fun `should add book to inventory from google books`() {
         val book1= Book(title = "INFERNO",authors = listOf("DAN BROWN"), imageLinks = ImageLinks("imageURL", "inameURL"),description = "description",price = "234",quantity = "25")
         webTestClient.post().uri("/addBook")
