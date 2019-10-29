@@ -1,0 +1,6 @@
+google:
+  url: "https://www.googleapis.com/books/v1/volumes"
+
+kakfa:
+  port: "127.0.0.1:9092"
+  groupId: "group_id"

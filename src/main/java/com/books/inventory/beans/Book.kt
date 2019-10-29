@@ -1,15 +1,26 @@
 package com.books.inventory.beans
 
 import org.springframework.data.annotation.Id
-import java.lang.module.ModuleDescriptor
+import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
+@Document(collection = "book")
 data class Book(@Id
                 var id: String = UUID.randomUUID().toString(),
                 val title: String,
-                val authors: List<String>,
-                val image: String,
-                val description: String,
-                val price: String,
-                val quantity: Int) {
+                val authors: List<String>?,
+                val imageLinks: ImageLinks?,
+                val description: String?,
+                val price: String?,
+                val quantity: String?) {
+    override fun toString(): String {
+        return "Book(id='$id', title='$title', price=$price, quantity=$quantity)"
+    }
 }
+
+data class ImageLinks(val smallThumbnail: String?, val thumbnail: String?)
+
+data class GoogleBooks(val items: List<GoogleBookType?>)
+
+data class GoogleBookType(val volumeInfo: Book?)
+
