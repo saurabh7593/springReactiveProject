@@ -1,6 +1,13 @@
 google:
   url: "https://www.googleapis.com/books/v1/volumes"
 
-kakfa:
-  port: "127.0.0.1:9092"
-  groupId: "group_id"
+spring:
+  data :
+    mongodb:
+      uri : "mongodb://10.131.124.187/test"
+  kafka:
+    consumer:
+      group-id: "group_id"
+      auto-offset-reset: earliest
+    # Kafka cluster or your Docker IP is different
+    bootstrap-servers: "10.131.124.187:9092"
